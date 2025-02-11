@@ -1,0 +1,38 @@
+name: Build and Deploy to GitHub Pages (Staging)
+
+on:
+  push:
+    branches:
+      - staging  # Trigger the workflow when changes are pushed to the 'staging' branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # The runner operating system
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Specify the version of Node.js to use (can be updated)
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: |
+          npm install
+
+      # Step 4: Build the Vite React project
+      - name: Build Project
+        run: |
+          npm run build  # This will trigger the build script defined in your package.json
+
+      # Step 5: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
+          publish_dir: ./dist  # The directory containing the build output (by default, Vite puts the build in `dist`)
